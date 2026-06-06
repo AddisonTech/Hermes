@@ -1,0 +1,25 @@
+# Rust
+/target
+Cargo.lock
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+dist/
+.ruff_cache/
+
+# OPC-UA certs (generated at runtime)
+pki/
+
+# Logs and data
+*.csv
+*.log
+
+# Env
+.env
+
+# IDE
+.vscode/
+.idea/

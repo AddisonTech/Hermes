@@ -1,0 +1,31 @@
+[server]
+endpoint = "opc.tcp://localhost:4840"
+# Security options: None, Basic128Rsa15, Basic256, Basic256Sha256
+security_policy = "None"
+# Mode options: None, Sign, SignAndEncrypt
+security_mode = "None"
+
+[auth]
+# Method options: anonymous, username, certificate
+method = "anonymous"
+username = ""
+password = ""
+
+[polling]
+interval_secs = 1.0
+
+# Default nodes to watch (OPC-UA NodeId format)
+# ns=X;s=StringId  — namespace X, string identifier
+# ns=X;i=IntId     — namespace X, integer identifier
+# i=2258           — ServerStatus node (namespace 0)
+default_nodes = [
+    "ns=2;s=MyTag",
+]
+
+[api]
+host = "127.0.0.1"
+port = 4000
+
+[mcp]
+host = "127.0.0.1"
+port = 4001

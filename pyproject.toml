@@ -1,0 +1,32 @@
+[project]
+name = "hermes-mcp"
+version = "0.1.0"
+description = "MCP server exposing OPC-UA plant-floor data to AI agents"
+authors = [{ name = "AddisonTech" }]
+requires-python = ">=3.10"
+dependencies = [
+    "asyncua>=1.1.0",
+    "fastmcp>=2.0.0",
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.24.0",
+    "ruff>=0.1.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
