@@ -8,7 +8,7 @@ pub async fn run(
     endpoint: String,
     nodes: Vec<String>,
     interval: f64,
-) -> Result<(), Box<dyn std::error::Error>> {
+) -> anyhow::Result<()> {
     let client = OpcClient::new(&endpoint);
 
     loop {

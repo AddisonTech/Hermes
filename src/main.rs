@@ -102,7 +102,7 @@ async fn main() {
     };
 
     if let Err(e) = result {
-        eprintln!("{}", format!("error: {e}").red());
+        eprintln!("{}", format!("error: {e:#}").red());
         std::process::exit(1);
     }
 }

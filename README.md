@@ -73,7 +73,7 @@ HERMES_PASSWORD=password
 ### Start
 
 ```bash
-python -m mcp.server
+python -m hermes_mcp.server
 ```
 
 ### Tools

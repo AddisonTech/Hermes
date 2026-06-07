@@ -22,3 +22,5 @@ csv = "1"
 chrono = { version = "0.4", features = ["serde"] }
 toml = "0.8"
 tower-http = { version = "0.5", features = ["cors"] }
+parking_lot = "0.12"
+anyhow = "1"

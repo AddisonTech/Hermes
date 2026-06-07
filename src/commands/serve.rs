@@ -12,7 +12,7 @@ pub async fn run(
     nodes: Vec<String>,
     interval: f64,
     port: u16,
-) -> Result<(), Box<dyn std::error::Error>> {
+) -> anyhow::Result<()> {
     let state: SharedState = Arc::new(RwLock::new(Default::default()));
 
     let router = api::router(state.clone());

@@ -2,7 +2,7 @@
 Hermes MCP Server — exposes OPC-UA plant-floor data as tools for AI agents.
 
 Start:
-    python -m mcp.server
+    python -m hermes_mcp.server
 
 Environment:
     HERMES_ENDPOINT   OPC-UA server URL (default: opc.tcp://localhost:4840)

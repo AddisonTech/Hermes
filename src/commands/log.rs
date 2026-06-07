@@ -9,7 +9,7 @@ pub async fn run(
     nodes: Vec<String>,
     interval: f64,
     output: String,
-) -> Result<(), Box<dyn std::error::Error>> {
+) -> anyhow::Result<()> {
     let client = OpcClient::new(&endpoint);
     println!("{} {}", "logging to:".cyan().bold(), output);
 
