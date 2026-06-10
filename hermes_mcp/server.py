@@ -5,9 +5,11 @@ Start:
     python -m hermes_mcp.server
 
 Environment:
-    HERMES_ENDPOINT   OPC-UA server URL (default: opc.tcp://localhost:4840)
-    HERMES_USERNAME   Username for auth (optional)
-    HERMES_PASSWORD   Password for auth (optional)
+    HERMES_ENDPOINT      OPC-UA server URL (default: opc.tcp://localhost:4840)
+    HERMES_USERNAME      Username for auth (optional)
+    HERMES_PASSWORD      Password for auth (optional)
+    HERMES_ALLOW_WRITES  Enable write_node (default: false). Writes are refused unless true.
+    HERMES_WRITE_TOKEN   If set, write_node requires a matching `token` argument.
 """
 
 import asyncio
@@ -24,6 +26,8 @@ class Settings(BaseSettings):
     endpoint: str = "opc.tcp://localhost:4840"
     username: str = ""
     password: str = ""
+    allow_writes: bool = False      # writing to the plant floor is OFF by default
+    write_token: str = ""           # if set, write_node requires a matching token
 
     model_config = {"env_prefix": "HERMES_"}
 
@@ -84,14 +88,40 @@ async def read_nodes(node_ids: list[str]) -> dict[str, Any]:
     }
 
 
+def _write_forbidden_reason(token: str) -> str | None:
+    """Return a refusal reason if writing is not permitted, else None.
+
+    Plant-floor writes are gated for safety, mirroring the disabled-by-default
+    posture of dangerous tools elsewhere in the stack:
+      * Refused entirely unless HERMES_ALLOW_WRITES is true.
+      * If HERMES_WRITE_TOKEN is set, the caller's `token` must match it.
+    """
+    if not settings.allow_writes:
+        return "writes disabled: set HERMES_ALLOW_WRITES=true to enable write_node"
+    if settings.write_token and token != settings.write_token:
+        return "invalid or missing write token"
+    return None
+
+
 @mcp.tool()
-async def write_node(node_id: str, value: float | int | str | bool) -> dict[str, Any]:
+async def write_node(
+    node_id: str,
+    value: float | int | str | bool,
+    token: str = "",
+) -> dict[str, Any]:
     """Write a value to an OPC-UA node.
+
+    Writing to the plant floor is gated: it is refused unless HERMES_ALLOW_WRITES
+    is true, and if HERMES_WRITE_TOKEN is set the `token` argument must match it.
 
     Args:
         node_id: OPC-UA NodeId string (e.g. 'ns=2;s=MyTag')
         value:   Value to write (float, int, str, or bool)
+        token:   Authorization token (required only if HERMES_WRITE_TOKEN is set)
     """
+    reason = _write_forbidden_reason(token)
+    if reason:
+        return {"node_id": node_id, "error": reason, "status": "forbidden"}
     client = await get_client()
     node = client.get_node(node_id)
     try:
